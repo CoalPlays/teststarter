@@ -143,13 +143,12 @@ class InputBox:
 						self.delayMultiplier = 0.4
 			elif event.type == KEYDOWN:
 				mods = pygame.key.get_mods()
-
 				if self.is_selected:
 					if event.key == K_RETURN and self.allow_new_line:
 						self.text_memory.append(self.text)
 						self.memory_index = 0
 						self.text += ' \\n '
-					elif mods and (mods == KMOD_LCTRL or mods == KMOD_LGUI) and event.key in {K_v, K_BACKSPACE, K_a,
+					elif mods and (mods == 4160 or mods == KMOD_LCTRL or mods == KMOD_LGUI) and event.key in {K_v, K_BACKSPACE, K_a,
 																							  K_c,
 																							  K_x, K_z, K_y, K_LEFT,
 																							  K_RIGHT}:
@@ -160,7 +159,9 @@ class InputBox:
 								self.text = ''
 								self.offset = 0
 								self.cursor_pos = (0, 0)
-							self.text += clipboard.paste()
+							text_length = len(self.text)
+							self.text = self.text[0:text_length - self.offset] + clipboard.paste() + self.text[
+																									 text_length - self.offset:text_length]
 							self.is_highlighted = False
 						elif event.key == K_BACKSPACE:
 							self.text_memory.append(self.text)
