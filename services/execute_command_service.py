@@ -11,9 +11,10 @@ def execute_command(command: str, participant_info: dict, variables: dict) -> tu
 							 timestamp=participant_info['timestamp'],
 							 scriptCount=str(participant_info['script_count']),
 							 **variables)
+	split_command = shlex.split(command, posix=False)
+	args = [arg.replace("'", '').replace('"', '') for arg in split_command]
+
 	try:
-		split_command = shlex.split(command, posix=False)
-		args = [arg.replace("'", '').replace('"', '')for arg in split_command]
 		process = subprocess.Popen(args, shell=False)
 		error = 0
 		is_focused = True
@@ -30,8 +31,6 @@ def execute_command(command: str, participant_info: dict, variables: dict) -> tu
 		return_code = process.wait()
 		return error, return_code
 	except Exception as _:
-		split_command = shlex.split(command, posix=False)
-		args = [arg.replace("'", '').replace('"', '') for arg in split_command]
 		process = subprocess.Popen(args, shell=True)
 		error = 0
 		is_focused = True
