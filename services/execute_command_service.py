@@ -12,7 +12,9 @@ def execute_command(command: str, participant_info: dict, variables: dict) -> tu
 							 scriptCount=str(participant_info['script_count']),
 							 **variables)
 	try:
-		process = subprocess.Popen(shlex.split(command, posix=False), shell=False)
+		split_command = shlex.split(command, posix=False)
+		args = [arg.replace("'", '').replace('"', '')for arg in split_command]
+		process = subprocess.Popen(args, shell=False)
 		error = 0
 		is_focused = True
 		clock = pygame.time.Clock()
@@ -28,7 +30,9 @@ def execute_command(command: str, participant_info: dict, variables: dict) -> tu
 		return_code = process.wait()
 		return error, return_code
 	except Exception as _:
-		process = subprocess.Popen(shlex.split(command, posix=False), shell=True)
+		split_command = shlex.split(command, posix=False)
+		args = [arg.replace("'", '').replace('"', '') for arg in split_command]
+		process = subprocess.Popen(shlex.split(args, posix=False), shell=True)
 		error = 0
 		is_focused = True
 		while process.poll() is None or not is_focused:
