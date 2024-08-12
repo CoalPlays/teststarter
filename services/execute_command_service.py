@@ -32,7 +32,7 @@ def execute_command(command: str, participant_info: dict, variables: dict) -> tu
 	except Exception as _:
 		split_command = shlex.split(command, posix=False)
 		args = [arg.replace("'", '').replace('"', '') for arg in split_command]
-		process = subprocess.Popen(shlex.split(args, posix=False), shell=True)
+		process = subprocess.Popen(args, shell=True)
 		error = 0
 		is_focused = True
 		while process.poll() is None or not is_focused:
