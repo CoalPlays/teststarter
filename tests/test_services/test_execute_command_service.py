@@ -27,7 +27,8 @@ class ExecuteCommandTests(unittest.TestCase):
 	@patch('pygame.event.get', return_value=[])
 	def test_execute_command(self, mock_event_get: Mock, mock_subprocesses_popen: Mock, mock_shlex_split: Mock):
 		command = 'command {id}, {suite}, {startTime}, {timestamp}, {scriptCount}, {custom}'
-		formatted_command = 'command VARIABLE_ID, VARIABLE_SUITE, VARIABLE_STARTTIME, VARIABLE_TIMESTAMP, 0, VARIABLE_CUSTOM'
+		command_with_variables = 'command VARIABLE_ID, VARIABLE_SUITE, VARIABLE_STARTTIME, VARIABLE_TIMESTAMP, 0, VARIABLE_CUSTOM'
+		formatted_command = ['command', 'VARIABLE_ID, VARIABLE_SUITE, VARIABLE_STARTTIME, VARIABLE_TIMESTAMP, 0, VARIABLE_CUSTOM']
 		mock_shlex_split.return_value = formatted_command
 
 		mock_process = Mock()
@@ -39,7 +40,30 @@ class ExecuteCommandTests(unittest.TestCase):
 
 		error, code = execute_command(command, PARTICIPANT_INFO, CUSTOM_VARIABLE)
 
-		mock_shlex_split.assert_called_once_with(formatted_command, posix=False)
+		mock_shlex_split.assert_called_once_with(command_with_variables, posix=False)
+		mock_subprocesses_popen.assert_called_once_with(formatted_command, shell=False)
+		self.assertEqual(code, 200)
+		self.assertEqual(error, False)
+
+	@patch('shlex.split')
+	@patch('subprocess.Popen')
+	@patch('pygame.event.get', return_value=[])
+	def test_execute_command_with_path_and_whitespace(self, mock_event_get: Mock, mock_subprocesses_popen: Mock, mock_shlex_split: Mock):
+		command = 'command "/path/to/script folder/script.py"'
+		command_with_variables = 'command "/path/to/script folder/script.py"'
+		formatted_command = ['command', '/path/to/script folder/script.py']
+		mock_shlex_split.return_value = formatted_command
+
+		mock_process = Mock()
+		mock_process.poll.side_effect = [None, True]
+		mock_process.wait.return_value = 200
+		mock_process.stderr = None
+
+		mock_subprocesses_popen.return_value = mock_process
+
+		error, code = execute_command(command, PARTICIPANT_INFO, CUSTOM_VARIABLE)
+
+		mock_shlex_split.assert_called_once_with(command_with_variables, posix=False)
 		mock_subprocesses_popen.assert_called_once_with(formatted_command, shell=False)
 		self.assertEqual(code, 200)
 		self.assertEqual(error, False)
