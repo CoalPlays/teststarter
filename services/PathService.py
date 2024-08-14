@@ -19,7 +19,7 @@ def get_resource_path(relative_path: str, outside: bool = False) -> str:
 				path = path.replace('Contents/Frameworks/', '', 1)
 				return path
 			else:
-				relative_path = relative_path.replace('.', '..', 1)
+				relative_path = relative_path.replace('/./', '/../../', 1)
 				return os.path.join(base_path, relative_path)
 		else:
 			return os.path.join(base_path, relative_path)
