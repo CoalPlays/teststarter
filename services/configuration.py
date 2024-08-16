@@ -120,7 +120,7 @@ class PsyTestProConfig:
 					 task_detail['position'], task_detail['state']))
 		return tasks
 
-	def delete_task(self, suite: str, task_id: str, group_id: str = None):
+	def delete_task(self, suite: str, task_id: str, group_id: Union[str, None] = None):
 		if suite == 'hab_variable_variable':
 			suite = 'hab_variable'
 
