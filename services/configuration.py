@@ -114,6 +114,7 @@ class PsyTestProConfig:
 			data = json.load(file)
 		tasks = []
 		for task_id, task_detail in data[suite]['tasks'][group_id]['tasks'].items():
+			
 			tasks.append(
 				Task(task_id, task_detail['name'], task_detail['time'], task_detail['type'], task_detail['value'],
 					 task_detail['position'], task_detail['state']))
@@ -127,6 +128,8 @@ class PsyTestProConfig:
 			data = json.load(file)
 
 		if group_id is None:
+			if not data[suite]['tasks'].get(task_id):
+				return
 			deleted_position = data[suite]['tasks'][task_id]['position']
 			del data[suite]['tasks'][task_id]
 			for key in data[suite]['tasks'].keys():
@@ -134,6 +137,8 @@ class PsyTestProConfig:
 				if position > deleted_position:
 					data[suite]['tasks'][key]['position'] = position - 1
 		else:
+			if not data[suite]['tasks'][group_id]['tasks'].get(task_id):
+				return
 			deleted_position = data[suite]['tasks'][group_id]['tasks'][task_id]['position']
 			del data[suite]['tasks'][group_id]['tasks'][task_id]
 			for key in data[suite]['tasks'][group_id]['tasks'].keys():
