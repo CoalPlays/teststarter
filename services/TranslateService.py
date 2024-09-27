@@ -12,7 +12,6 @@ class TranslateService:
 		if len(language) > 0:
 			self.current_language = language
 		self.translations = {}
-		self.load_language('en')
 		self.load_language(self.current_language)
 
 	def load_language(self, language: str):
