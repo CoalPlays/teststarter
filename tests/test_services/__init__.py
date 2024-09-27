@@ -2,3 +2,4 @@ from .test_configuration import ConfigurationTests
 from .test_execute_command_service import ExecuteCommandTests
 from .test_path_service import PathServiceTests
 from .test_language_configuration import LanguageConfigurationTests
+from .test_translate_service import TranslateServiceTests
